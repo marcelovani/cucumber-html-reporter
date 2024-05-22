@@ -23,11 +23,15 @@
                         <b><%= feature.keyword %>:</b><%= feature.name %>
                         <span class="label-container">
 
-                        <% feature.time = 0 %>
-                        <% _.each(feature.elements, function(element, scenarioIndex) { %>
-                            <% feature.time = feature.time + element.time %>    
-                        <% }) %>
-                        <span><%= (feature.time / 60000000000 >= 1) ? Math.trunc(feature.time / 60000000000) + "m " + ((feature.time % 60000000000) / 1000000000) + "s" : (feature.time / 1000000000) + "s" %></span>
+                        <%
+                            feature.time = 0
+                            // Add up time from each scenario in the feature.
+                            _.each(feature.elements, function(element, scenarioIndex) {
+                                feature.time = feature.time + element.time
+                            })
+                        %>
+
+                        <span><%= calculateDuration(feature.time) %></span>
                                 
               <% if (feature.scenarios.passed) { %><span class="label label-success"
                                                          title="<%= feature.scenarios.passed %> Scenarios Passed"><%= feature.scenarios.passed %></span><% } %>
@@ -71,7 +75,7 @@
                                         </div>
                                         <div>
                             <span class="label-container <% if (element.retried) { %>label-retries<% } %>">
-                              <span><%= (element.time / 60000000000 >= 1) ? Math.trunc(element.time / 60000000000) + "m " + ((element.time % 60000000000) / 1000000000) + "s" : (element.time / 1000000000) + "s" %></span>
+                                <span><%= calculateDuration(element.time) %></span>
                               <% if (element.retried) { %><span class="label label-saffron"
                                                               title="Re-runs : <%= element.retried %>">Re-runs : <%= element.retried %></span><% } %>
                               <% if (element.passed) { %><span class="label label-success"
